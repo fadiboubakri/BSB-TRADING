@@ -84,7 +84,7 @@ function BattlePassPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white px-8 py-4 text-lg rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
-                  onClick={() => window.open('https://wa.me/+2250748994313', '_blank')}
+                  onClick={() => window.open('https://wa.me/+33749677529', '_blank')}
                 >
                   Commencer les missions
                 </Button>
@@ -128,8 +128,8 @@ function BattlePassPage() {
                     key={index}
                     onClick={() => goToSlide(index)}
                     className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-300 ${currentSlide === index
-                        ? 'border-purple-400 scale-110'
-                        : 'border-purple-500/30 hover:border-purple-400/60'
+                      ? 'border-purple-400 scale-110'
+                      : 'border-purple-500/30 hover:border-purple-400/60'
                       }`}
                   >
                     <img
@@ -290,7 +290,7 @@ function BattlePassPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white px-8 py-4 text-lg rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
-              onClick={() => window.open('https://wa.me/+2250748994313', '_blank')}
+              onClick={() => window.open('https://wa.me/+33749677529', '_blank')}
             >
               Commencer maintenant
             </Button>

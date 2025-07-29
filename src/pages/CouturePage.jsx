@@ -207,7 +207,7 @@ function CouturePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-8 py-4 text-lg rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/25"
-              onClick={() => window.open('https://wa.me/+2250748994313', '_blank')}
+              onClick={() => window.open('https://wa.me/+33749677529', '_blank')}
             >
               Être notifié
             </Button>
