@@ -11,49 +11,57 @@ import CouturePage from './pages/CouturePage.jsx'
 import './App.css'
 
 function App() {
+
   const [activeSection, setActiveSection] = useState(null)
   const [currentPage, setCurrentPage] = useState('home')
 
-  // Handle URL changes for direct navigation
+  // Map routes to page keys
+  const pageRoutes = {
+    '/': 'home',
+    '/trading': 'trading',
+    '/battlepass': 'battlepass',
+    '/couture': 'couture',
+  }
+
+  const pageComponents = {
+    trading: <TradingPage />,
+    battlepass: <BattlePassPage />,
+    couture: <CouturePage />,
+  }
+
+  // Set initial page + handle back/forward navigation
   useEffect(() => {
-    const path = window.location.pathname
-    if (path === '/trading') {
-      setCurrentPage('trading')
-    } else if (path === '/battlepass') {
-      setCurrentPage('battlepass')
-    } else if (path === '/couture') {
-      setCurrentPage('couture')
-    } else {
-      setCurrentPage('home')
+    const handleLocationChange = () => {
+      const path = window.location.pathname
+      const normalizedPath = path === '/' ? '/' : path.toLowerCase()
+      setCurrentPage(pageRoutes[normalizedPath] || 'home')
     }
+
+    handleLocationChange() // on mount
+
+    window.addEventListener('popstate', handleLocationChange)
+    return () => window.removeEventListener('popstate', handleLocationChange)
   }, [])
 
-  // Handle navigation
+  // Navigation handler
   const navigateToPage = (page) => {
-    setCurrentPage(page)
-    window.history.pushState({},
-      '', `/${page}`)
-    window.scrollTo(0, 0);
-  }
-
-  // Render different pages based on current page
-  if (currentPage === 'trading') {
-    return <TradingPage />
-  }
-
-  if (currentPage === 'battlepass') {
-    return <BattlePassPage />
-  }
-
-  if (currentPage === 'couture') {
-    return <CouturePage />
-  }
-
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+    if (page !== currentPage) {
+      const path = page === 'home' ? '/' : `/${page}`
+      window.history.pushState({}, '', path)
+      setCurrentPage(page)
+      window.scrollTo(0, 0)
     }
+  }
+
+  // Scroll to section for homepage
+  const scrollToSection = (sectionId) => {
+    const el = document.getElementById(sectionId)
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  // Render routed page if not on home
+  if (currentPage !== 'home' && pageComponents[currentPage]) {
+    return pageComponents[currentPage]
   }
 
   const services = [
@@ -86,7 +94,7 @@ function App() {
         <div className="absolute inset-0 bg-black/40"></div>
         <div
           className="absolute inset-0 bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${newHeroImg})`, backgroundSize: '100% 100%'}}
+          style={{ backgroundImage: `url(${newHeroImg})`, backgroundSize: '100% 100%' }}
         ></div>
 
         <div className="relative z-10 text-center text-white w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
