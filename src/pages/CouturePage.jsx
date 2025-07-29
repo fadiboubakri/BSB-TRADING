@@ -19,8 +19,6 @@ import couture15 from '../assets/couture-15.jpg'
 
 function CouturePage() {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const thumbnailRef = useRef(null)
-
 
   const images = [
     couture1, couture2, couture3, couture4, couture5,
@@ -42,7 +40,7 @@ function CouturePage() {
 
   const handleReturnHome = () => {
     // Navigate back to home page
-    window.location.href = '/'
+    window.location.href = import.meta.env.BASE_URL
   }
 
   return (
@@ -50,8 +48,8 @@ function CouturePage() {
       {/* Header */}
       <header className="py-6 px-4 sm:px-6 border-b border-amber-500/20">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="text-amber-400 hover:text-white hover:bg-amber-500/20 px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base"
             onClick={handleReturnHome}
           >
@@ -59,91 +57,74 @@ function CouturePage() {
             Retour
           </Button>
           <h1 className="text-2xl sm:text-3xl font-bold text-amber-400">HAUTE COUTURE</h1>
-          <div className="w-20"></div>
+          <div className="w-10"></div>
         </div>
       </header>
-
-      {/* Hero Section */}
       <section className="py-12 sm:py-20 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-amber-500/20 backdrop-blur-sm rounded-full p-4 w-16 h-16 mx-auto mb-6 border border-amber-400/30">
-            <Shirt className="h-8 w-8 text-amber-400 mx-auto" />
-          </div>
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
-            HAUTE <span className="text-amber-400">COUTURE</span>
-          </h2>
-          <p className="text-lg sm:text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8">
-            La haute couture chez BsBridge symbolise l'union entre l'investissement et l'univers du luxe. 
-            Chaque pièce de notre collection incarne cette passerelle entre le monde de la finance et celui de la mode, 
-            créant une marque de vêtements unique, où l'élégance et l'exclusivité rencontrent l'innovation et l'investissement.
-          </p>
-          
-          {/* Availability Notice */}
-          <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 rounded-2xl p-6 mb-12 backdrop-blur-sm">
-            <div className="flex items-center justify-center mb-4">
-              <Calendar className="h-6 w-6 text-amber-400 mr-3" />
-              <h3 className="text-xl font-bold text-amber-400">Disponibilité</h3>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <div className="bg-amber-500/20 backdrop-blur-sm rounded-full p-4 w-16 h-16 mb-6 border border-amber-400/30">
+              <Shirt className="h-8 w-8 text-amber-400 mx-auto" />
             </div>
-            <p className="text-lg text-amber-300 font-medium">
-              🗓️ Collection disponible à partir du 1er janvier 2025
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6">
+              HAUTE <span className="text-amber-400">COUTURE</span>
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-300 leading-relaxed mb-8">
+              La haute couture chez BsBridge symbolise l'union entre l'investissement et l'univers du luxe.
+              Chaque pièce de notre collection incarne cette passerelle entre le monde de la finance et celui de la mode,
+              créant une marque de vêtements unique, où l'élégance et l'exclusivité rencontrent l'innovation et l'investissement.
             </p>
-            <p className="text-gray-300 mt-2">
-              Préparez-vous à découvrir une collection exclusive qui redéfinit le luxe moderne
-            </p>
+            <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 rounded-2xl p-4 backdrop-blur-sm">
+              <div className="flex items-center mb-4">
+                <Calendar className="h-6 w-6 text-amber-400 mr-3" />
+                <h3 className="text-xl font-bold text-amber-400">Disponibilité</h3>
+              </div>
+              <p className="text-lg text-amber-300 font-medium">
+                🗓️ Collection disponible à partir du 1er janvier 2025
+              </p>
+              <p className="text-gray-300 mt-2">
+                Préparez-vous à découvrir une collection exclusive qui redéfinit le luxe moderne
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Carousel Section */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-br from-slate-900/80 via-amber-900/20 to-orange-900/20">
-        <div className="max-w-7xl mx-auto">
-          <h3 className="text-3xl sm:text-4xl font-bold text-white text-center mb-12">
-            Collection <span className="text-amber-400">BSB Haute Couture</span>
-          </h3>
-          
-          {/* Main Carousel */}
-          <div className="relative max-w-4xl mx-auto mb-8">
-            <div className="relative w-full max-w-4xl mx-auto aspect-square overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm border border-amber-500/20">
+          {/* Carousel moves here next to text */}
+          <div className="relative w-full max-w-full mx-auto mb-8 md:max-w-2xl lg:max-w-4xl h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]">
+            <div className="relative w-full h-full overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm border border-amber-500/20">
               <img
                 src={images[currentSlide]}
                 alt={`Haute Couture BSB ${currentSlide + 1}`}
                 className="w-full h-full object-contain transition-all duration-500"
               />
-              
-              {/* Navigation Arrows */}
               <button
                 onClick={prevSlide}
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-amber-500/20 hover:bg-amber-500/40 backdrop-blur-sm rounded-full p-3 transition-all duration-300 border border-amber-400/30 hover:border-amber-400/60"
               >
                 <ChevronLeft className="h-6 w-6 text-amber-400" />
               </button>
-              
               <button
                 onClick={nextSlide}
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-amber-500/20 hover:bg-amber-500/40 backdrop-blur-sm rounded-full p-3 transition-all duration-300 border border-amber-400/30 hover:border-amber-400/60"
               >
                 <ChevronRight className="h-6 w-6 text-amber-400" />
               </button>
-              
-              {/* Image Counter */}
               <div className="absolute bottom-4 left-4 bg-amber-500/20 backdrop-blur-sm rounded-lg px-3 py-1 border border-amber-400/30">
                 <span className="text-amber-300 text-sm font-medium">
                   {currentSlide + 1} / {images.length}
                 </span>
               </div>
             </div>
-            
-            {/* Thumbnail Navigation */}
-            <div className="flex justify-center mt-6 space-x-2 overflow-x-auto pb-2 px-4 sm:px-0 scroll-smooth" ref={thumbnailRef}>
+
+            {/* Thumbnails */}
+            <div className="flex items-center mt-6 space-x-2 overflow-x-auto p-4 sm:px-0 scroll-smooth">
               {images.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
-                  className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
-                    currentSlide === index 
-                      ? 'border-amber-400 scale-110' 
-                      : 'border-amber-500/30 hover:border-amber-400/60'
-                  }`}
+                  className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-300 ${currentSlide === index
+                    ? 'border-amber-400 scale-110'
+                    : 'border-amber-500/30 hover:border-amber-400/60'
+                    }`}
                 >
                   <img
                     src={image}
@@ -154,11 +135,10 @@ function CouturePage() {
               ))}
             </div>
           </div>
-          
           {/* Collection Info */}
-          <div className="text-center max-w-2xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto mt-12 mb-0">
             <p className="text-lg text-gray-300 mb-4">
-              Découvrez notre collection exclusive de {images.length} pièces uniques, 
+              Découvrez notre collection exclusive de {images.length} pièces uniques,
               alliant élégance française et innovation BSB.
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm text-amber-300">
@@ -167,7 +147,7 @@ function CouturePage() {
               <span>• Design exclusif BSB</span>
               <span>• Savoir-faire français</span>
             </div>
-          </div>
+            </div>
         </div>
       </section>
 
@@ -177,36 +157,36 @@ function CouturePage() {
           <h3 className="text-3xl sm:text-4xl font-bold text-white text-center mb-12">
             L'Excellence <span className="text-amber-400">BSB</span>
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
               <h4 className="text-xl font-bold text-amber-400 mb-4">Exclusivité</h4>
               <p className="text-gray-300 leading-relaxed">
-                Chaque pièce est conçue en édition limitée, garantissant l'unicité et l'exclusivité 
+                Chaque pièce est conçue en édition limitée, garantissant l'unicité et l'exclusivité
                 pour nos membres privilégiés de l'écosystème BsBridge.
               </p>
             </div>
-            
+
             <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
               <h4 className="text-xl font-bold text-amber-400 mb-4">Innovation</h4>
               <p className="text-gray-300 leading-relaxed">
-                L'alliance parfaite entre tradition couturière et innovation technologique, 
+                L'alliance parfaite entre tradition couturière et innovation technologique,
                 reflétant l'esprit avant-gardiste de BsBridge.
               </p>
             </div>
-            
+
             <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
               <h4 className="text-xl font-bold text-amber-400 mb-4">Qualité Premium</h4>
               <p className="text-gray-300 leading-relaxed">
-                Matériaux d'exception et savoir-faire artisanal français pour une qualité 
+                Matériaux d'exception et savoir-faire artisanal français pour une qualité
                 irréprochable digne de l'univers du luxe.
               </p>
             </div>
-            
+
             <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
               <h4 className="text-xl font-bold text-amber-400 mb-4">Investissement</h4>
               <p className="text-gray-300 leading-relaxed">
-                Plus qu'un vêtement, un investissement dans un style de vie exclusif 
+                Plus qu'un vêtement, un investissement dans un style de vie exclusif
                 et une appartenance à la communauté BsBridge.
               </p>
             </div>
@@ -221,18 +201,18 @@ function CouturePage() {
             Rejoignez l'<span className="text-amber-400">Élite BSB</span>
           </h3>
           <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-            Soyez parmi les premiers à découvrir notre collection exclusive. 
+            Soyez parmi les premiers à découvrir notre collection exclusive.
             Inscrivez-vous pour être notifié du lancement.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
+            <Button
               className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-8 py-4 text-lg rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-amber-500/25"
-              onClick={() => window.open('https://wa.me/+33123456789', '_blank')}
+              onClick={() => window.open('https://wa.me/+2250748994313', '_blank')}
             >
               Être notifié
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-slate-900 px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg rounded-full transition-all duration-300"
               onClick={handleReturnHome}
             >
@@ -250,7 +230,7 @@ function CouturePage() {
             <p className="text-gray-400">L'excellence au service du luxe</p>
           </div>
           <div className="text-gray-500 text-sm">
-            © 2024 BsBridge. Tous droits réservés.
+            © 2025 BsBridge. Tous droits réservés.
           </div>
         </div>
       </footer>

@@ -5,7 +5,7 @@ import tradingBotImg from '../assets/trading-bot.jpg'
 function TradingPage() {
   const handleReturnHome = () => {
     // Navigate back to home page
-    window.location.href = '/'
+      window.location.href = import.meta.env.BASE_URL
   }
 
   return (
@@ -45,15 +45,9 @@ function TradingPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 text-lg rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/25"
-                  onClick={() => window.open('https://wa.me/+33123456789', '_blank')}
+                  onClick={() => window.open('https://wa.me/+2250748994313', '_blank')}
                 >
                   Commencer maintenant
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900 px-8 py-4 text-lg rounded-full transition-all duration-300"
-                >
-                  Voir la démo
                 </Button>
               </div>
             </div>
@@ -159,7 +153,7 @@ function TradingPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 text-lg rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/25"
-              onClick={() => window.open('https://wa.me/+33123456789', '_blank')}
+              onClick={() => window.open('https://wa.me/+2250748994313', '_blank')}
             >
               Commencer maintenant
             </Button>
@@ -182,7 +176,7 @@ function TradingPage() {
             <p className="text-gray-400">L'intelligence artificielle au service de vos investissements</p>
           </div>
           <div className="text-gray-500 text-sm">
-            © 2024 BsBridge. Tous droits réservés.
+            © 2025 BsBridge. Tous droits réservés.
           </div>
         </div>
       </footer>
