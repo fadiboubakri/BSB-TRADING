@@ -4,6 +4,10 @@ import { ChevronDown, Bot, Trophy, Shirt, ArrowRight, Phone, Mail, Send, Camera,
 import TradingPage from './pages/TradingPage.jsx'
 import BattlePassPage from './pages/BattlePassPage.jsx'
 import CouturePage from './pages/CouturePage.jsx'
+import tradingBotImg from './assets/trading-bot.jpg'
+import hauteCoutureImg from './assets/haute-couture.jpg'
+import battlePassNewImg from './assets/battle-pass-new.jpg'
+import newHeroImg from './assets/new-hero.jpg'
 import './App.css'
 
 function App() {
@@ -65,20 +69,20 @@ function App() {
       id: 'trading',
       title: 'BOT TRADING',
       icon: Bot,
-      image: '/trading-bot.jpg', description: "Le trading, c’est simplement l’art d’acheter et de revendre des actifs financiers en profitant des fluctuations de leur valeur. Chez BSB, nous investissons sur différents marchés, comme par exemple les cryptomonnaies (telles que le Bitcoin), les matières premières (comme l’or), ou encore les actions des grandes entreprises américaines. L’idée, c’est de laisser notre robot de trading automatisé analyser le marché et prendre des décisions d’achat et de vente à votre place, afin de générer des revenus de façon autonome et simplifiée."
+      image: tradingBotImg, description: "Le trading, c’est simplement l’art d’acheter et de revendre des actifs financiers en profitant des fluctuations de leur valeur. Chez BSB, nous investissons sur différents marchés, comme par exemple les cryptomonnaies (telles que le Bitcoin), les matières premières (comme l’or), ou encore les actions des grandes entreprises américaines. L’idée, c’est de laisser notre robot de trading automatisé analyser le marché et prendre des décisions d’achat et de vente à votre place, afin de générer des revenus de façon autonome et simplifiée."
     },
     {
       id: 'battlepass',
       title: 'BATTLE PASS',
       icon: Trophy,
-      image: '/battle-pass-new.jpg',
+      image: battlePassNewImg,
       description: "Fonctionnement Ludique : Le Battle Pass vous permet de compléter des missions pour obtenir des récompenses variées, qu’il s’agisse de cadeaux ou de bonus financiers.\nRécompenses Attractives : Chaque mission réussie apporte une valeur ajoutée, rendant l’expérience plus engageante et motivante.\nTransparence et Sécurité : Comme pour le trading automatisé, vous gardez le contrôle total de vos fonds et de vos gains."
     },
     {
       id: 'couture',
       title: 'HAUTE COUTURE',
       icon: Shirt,
-      image: '/haute-couture.jpg',
+      image: hauteCoutureImg,
       description: "La haute couture chez BsBridge symbolise l'union entre l'investissement et l'univers du luxe. Chaque pièce de notre collection incarne cette passerelle entre le monde de la finance et celui de la mode, créant une marque de vêtements unique, où l'élégance et l'exclusivité rencontrent l'innovation et l'investissement. C'est ainsi que BsBridge fait le lien entre ces deux univers."
     }
   ]
@@ -90,7 +94,7 @@ function App() {
         <div className="absolute inset-0 bg-black/40"></div>
         <div
           className="absolute inset-0 bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(/new-hero.jpg)`, backgroundSize: '100% 100%' }}
+          style={{ backgroundImage: `url(${newHeroImg})`, backgroundSize: '100% 100%' }}
         ></div>
 
         <div className="relative z-10 text-center text-white w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
