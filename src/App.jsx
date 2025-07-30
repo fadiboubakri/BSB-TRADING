@@ -190,6 +190,8 @@ function App() {
                     } ${activeSection === service.id ? 'ring-2 ring-cyan-400' : ''}`}
                   onMouseEnter={() => setActiveSection(service.id)}
                   onMouseLeave={() => setActiveSection(null)}
+
+                      onClick={() => navigateToPage(service.id)}
                 >
                   <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${service.id === 'trading' ? 'bg-gradient-to-br from-cyan-500/10 to-blue-500/10' :
                     service.id === 'battlepass' ? 'bg-gradient-to-br from-purple-500/10 to-pink-500/10' :
@@ -239,7 +241,6 @@ function App() {
                         service.id === 'battlepass' ? 'text-purple-400 hover:text-white hover:bg-purple-500/20' :
                           'text-amber-400 hover:text-white hover:bg-amber-500/20'
                         }`}
-                      onClick={() => navigateToPage(service.id)}
                     >
                       En savoir plus
                       <ArrowRight className="ml-2 h-3 w-3 sm:h-4 w-4" />
