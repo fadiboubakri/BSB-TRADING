@@ -1,10 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
 import { ChevronDown, Bot, Trophy, Shirt, ArrowRight, Phone, Mail, Send, Camera, Instagram } from 'lucide-react'
-import tradingBotImg from './assets/trading-bot.jpg'
-import hauteCoutureImg from './assets/haute-couture.jpg'
-import battlePassNewImg from './assets/battle-pass-new.jpg'
-import newHeroImg from './assets/new-hero.jpg'
 import TradingPage from './pages/TradingPage.jsx'
 import BattlePassPage from './pages/BattlePassPage.jsx'
 import CouturePage from './pages/CouturePage.jsx'
@@ -69,20 +65,20 @@ function App() {
       id: 'trading',
       title: 'BOT TRADING',
       icon: Bot,
-      image: tradingBotImg, description: "Le trading, c’est simplement l’art d’acheter et de revendre des actifs financiers en profitant des fluctuations de leur valeur. Chez BSB, nous investissons sur différents marchés, comme par exemple les cryptomonnaies (telles que le Bitcoin), les matières premières (comme l’or), ou encore les actions des grandes entreprises américaines. L’idée, c’est de laisser notre robot de trading automatisé analyser le marché et prendre des décisions d’achat et de vente à votre place, afin de générer des revenus de façon autonome et simplifiée."
+      image: '/trading-bot.jpg', description: "Le trading, c’est simplement l’art d’acheter et de revendre des actifs financiers en profitant des fluctuations de leur valeur. Chez BSB, nous investissons sur différents marchés, comme par exemple les cryptomonnaies (telles que le Bitcoin), les matières premières (comme l’or), ou encore les actions des grandes entreprises américaines. L’idée, c’est de laisser notre robot de trading automatisé analyser le marché et prendre des décisions d’achat et de vente à votre place, afin de générer des revenus de façon autonome et simplifiée."
     },
     {
       id: 'battlepass',
       title: 'BATTLE PASS',
       icon: Trophy,
-      image: battlePassNewImg,
+      image: '/battle-pass-new.jpg',
       description: "Fonctionnement Ludique : Le Battle Pass vous permet de compléter des missions pour obtenir des récompenses variées, qu’il s’agisse de cadeaux ou de bonus financiers.\nRécompenses Attractives : Chaque mission réussie apporte une valeur ajoutée, rendant l’expérience plus engageante et motivante.\nTransparence et Sécurité : Comme pour le trading automatisé, vous gardez le contrôle total de vos fonds et de vos gains."
     },
     {
       id: 'couture',
       title: 'HAUTE COUTURE',
       icon: Shirt,
-      image: hauteCoutureImg,
+      image: '/haute-couture.jpg',
       description: "La haute couture chez BsBridge symbolise l'union entre l'investissement et l'univers du luxe. Chaque pièce de notre collection incarne cette passerelle entre le monde de la finance et celui de la mode, créant une marque de vêtements unique, où l'élégance et l'exclusivité rencontrent l'innovation et l'investissement. C'est ainsi que BsBridge fait le lien entre ces deux univers."
     }
   ]
@@ -94,7 +90,7 @@ function App() {
         <div className="absolute inset-0 bg-black/40"></div>
         <div
           className="absolute inset-0 bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${newHeroImg})`, backgroundSize: '100% 100%' }}
+          style={{ backgroundImage: `url(/new-hero.jpg)`, backgroundSize: '100% 100%' }}
         ></div>
 
         <div className="relative z-10 text-center text-white w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -163,9 +159,9 @@ function App() {
       {/* Introduction Section */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-br from-slate-900/90 via-blue-900/70 to-purple-900/50">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 sm:mb-8">
             Bienvenue dans l'<span className="text-cyan-400">univers BSB</span>
-          </h2>
+          </h1>
           <p className="text-lg sm:text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
             Découvrez l'écosystème BsBridge où l'innovation financière rencontre le luxe et le gaming.
             Une plateforme révolutionnaire qui unit trois piliers fondamentaux pour transformer votre
