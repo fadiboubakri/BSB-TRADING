@@ -80,7 +80,7 @@ function CouturePage() {
                 <h3 className="text-xl font-bold text-amber-400">Disponibilité</h3>
               </div>
               <p className="text-lg text-amber-300 font-medium">
-                🗓️ Collection disponible à partir du 1er janvier 2025
+                🗓️ Collection disponible à partir du 1er janvier 2026
               </p>
               <p className="text-gray-300 mt-2">
                 Préparez-vous à découvrir une collection exclusive qui redéfinit le luxe moderne

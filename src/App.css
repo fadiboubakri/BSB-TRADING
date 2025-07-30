@@ -156,6 +156,20 @@ html {
   z-index: -2;
 }
 
+.hero-bg {
+  background-image: var(--mobile-bg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+@media (min-width: 900px) {
+  .hero-bg {
+    background-image: var(--desktop-bg);
+    background-size: cover;
+  }
+}
+
 @keyframes glitch-1 {
   0%, 14%, 15%, 49%, 50%, 99%, 100% {
     transform: translate(0);
