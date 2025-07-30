@@ -5,7 +5,7 @@ import tradingBotImg from '../assets/trading-bot.jpg'
 function TradingPage() {
   const handleReturnHome = () => {
     // Navigate back to home page
-    window.location.href = import.meta.env.BASE_URL
+    window.location.href = "/"
   }
 
   return (
@@ -62,7 +62,38 @@ function TradingPage() {
           </div>
         </div>
       </section>
-
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800">
+        <div className="max-w-4xl mx-auto text-center space-y-10">
+          <div>
+            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">💼 Investissez en toute simplicité dès 1500 €</h3>
+            <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+              Rejoignez notre système de trading automatisé avec un ticket d’entrée unique de 1500 €.<br />
+              Aucune connaissance en finance n’est requise : vous investissez une fois, et notre technologie travaille pour vous 24h/24.
+            </p>
+          </div>
+          <hr className="border-cyan-400/30 my-4 w-1/3 mx-auto" />
+          <div>
+            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">📊 Des gains potentiels entre 500 € et 3000 € / mois</h3>
+            <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+              Chaque mois, nos utilisateurs peuvent générer entre 500 € et 3000 €, voire plus, selon les conditions du marché.
+            </p>
+          </div>
+          <hr className="border-cyan-400/30 my-4 w-1/3 mx-auto" />
+          <div>
+            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">🤝 Un modèle 100 % gagnant-gagnant</h3>
+            <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-4">
+              Chez <strong>BSB</strong>, vos résultats sont notre priorité, car nous ne gagnons que si vous gagnez.
+            </p>
+            <ul className="text-gray-300 text-base sm:text-lg leading-relaxed text-left max-w-xl mx-auto space-y-2">
+              <li>• 25 % des bénéfices réalisés sont reversés à BSB — uniquement si vous êtes en profit.</li>
+              <li>• 75 % des bénéfices restants vous reviennent : à vous de choisir si vous souhaitez les retirer ou les réinvestir pour activer un second bot et augmenter vos gains.</li>
+            </ul>
+            <p className="text-cyan-400 font-medium mt-4">
+              💡 Tout est dans notre intérêt de maximiser vos bénéfices chaque mois, car c’est sur les 25 % de performance que nous sommes rémunérés.
+            </p>
+          </div>
+        </div>
+      </section>
       {/* Features Section */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-br from-slate-900/80 via-cyan-900/20 to-blue-900/20">
         <div className="max-w-6xl mx-auto">

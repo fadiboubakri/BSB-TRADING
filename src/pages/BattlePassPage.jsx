@@ -44,7 +44,7 @@ function BattlePassPage() {
 
   const handleReturnHome = () => {
     // Navigate back to home page
-    window.location.href = import.meta.env.BASE_URL
+    window.location.href = "/"
   }
 
   return (
