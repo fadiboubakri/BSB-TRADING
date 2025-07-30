@@ -6,7 +6,6 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(),tailwindcss()],
-  base: '/BSB-TRADING/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -15,6 +14,6 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 4173,
-    allowedHosts: ["all", "4173-iz4qykmqgfnm2pm4zuoos-9f8867ac.manus.computer"]
+    allowedHosts: ["all"]
   }
 })
