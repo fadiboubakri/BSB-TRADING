@@ -163,7 +163,7 @@ html {
   background-size: 100% 100%;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1024px) {
   .hero-bg {
     background-image: var(--desktop-bg);
     background-size: cover;
