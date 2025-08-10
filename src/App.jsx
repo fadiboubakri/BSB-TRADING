@@ -1,480 +1,521 @@
-import { useState, useEffect, useRef } from 'react'
-import { Button } from '@/components/ui/button.jsx'
-import { ChevronDown, Bot, Trophy, Shirt, ArrowRight, Phone, Mail, Send, Camera, Instagram } from 'lucide-react'
-import TradingPage from './pages/TradingPage.jsx'
-import BattlePassPage from './pages/BattlePassPage.jsx'
-import CouturePage from './pages/CouturePage.jsx'
-import tradingBotImg from './assets/trading-bot.jpg'
-import hauteCoutureImg from './assets/haute-couture.jpg'
-import battlePassNewImg from './assets/battle-pass-new.jpg'
-import newHeroDesktopImg from './assets/hero-desktop.jpg'
-import newHeroImg from './assets/new-hero.jpg'
-import './App.css'
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  ArrowRight,
+  Shield,
+  Zap,
+  CheckCircle,
+  Menu,
+  X,
+} from "lucide-react";
+import WeTrackedStyleTroisPalier from "./components/WeTrackedStyleTroisPalier";
+import {
+  useHeroAnimations,
+  useStatsAnimation,
+  useTestimonialsAnimation,
+  useMagneticEffect,
+  useFAQAnimation,
+} from "./hooks/GSAPAnimations";
+import HowItWorksSection from "./components/HowItWorksSection";
+import "./App.css";
+
+// Import assets
+import heroDesktop from "./assets/hero-desktop.jpg";
+import newHero from "./assets/new-hero.jpg";
+import BsbLogo from "./assets/bsb-logo.jpg";
+
+import ContactCarousel from "./components/ContactCarousel";
+import ResponsiveImage from "./components/ResponsiveImage";
+import Testimonials from "./components/Testimonials";
+import FAQSection from "./components/FAQ";
 
 function App() {
-  const [activeSection, setActiveSection] = useState(null)
-  const [currentPage, setCurrentPage] = useState('home')
+  const [currentPage, setCurrentPage] = useState("home");
+  const [activeSection, setActiveSection] = useState("hero");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('bot-trading')
 
-  // Carousel state for mobile contact section
-  const [currentContactSlide, setCurrentContactSlide] = useState(0)
-  const contactSlides = ['whatsapp', 'email', 'instagram', 'telegram', 'snapchat']
-  const carouselInterval = useRef(null)
-
-  // Map routes to page keys
-  const pageRoutes = {
-    '/': 'home',
-    '/trading': 'trading',
-    '/battlepass': 'battlepass',
-    '/couture': 'couture',
-  }
-
-  const pageComponents = {
-    trading: <TradingPage />,
-    battlepass: <BattlePassPage />,
-    couture: <CouturePage />,
-  }
-
-  // Set initial page + handle back/forward navigation
+  // GSAP Animation Hooks
+  const { heroRef, titleRef, subtitleRef, ctaRef, backgroundRef } =
+    useHeroAnimations();
+  const { statsRef } = useStatsAnimation();
+  const { buttonRef: magneticButtonRef } = useMagneticEffect();
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [navHidden, setNavHidden] = useState(false);
+  // Scroll handler for active section
   useEffect(() => {
-    const handleLocationChange = () => {
-      const path = window.location.pathname
-      const normalizedPath = path === '/' ? '/' : path.toLowerCase()
-      setCurrentPage(pageRoutes[normalizedPath] || 'home')
-    }
+    const handleScroll = () => {
+      const sections = [
+        "hero",
+        "stats",
+        "trois-palier",
+        "how-it-works",
+        "testimonials",
+        "contact",
+        "faq"
+      ];
+      const scrollPosition = window.scrollY + 100;
 
-    handleLocationChange() // on mount
-
-    window.addEventListener('popstate', handleLocationChange)
-    return () => window.removeEventListener('popstate', handleLocationChange)
-  }, [])
-
-  // Auto-rotate carousel on mobile
-  useEffect(() => {
-    const isMobile = window.innerWidth <= 768 // Adjust breakpoint as needed
-    
-    if (isMobile) {
-      carouselInterval.current = setInterval(() => {
-        setCurrentContactSlide(prev => (prev + 1) % contactSlides.length)
-      }, 2000) // Change every 3 seconds
-    }
-
-    return () => {
-      if (carouselInterval.current) {
-        clearInterval(carouselInterval.current)
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (
+            scrollPosition >= offsetTop &&
+            scrollPosition < offsetTop + offsetHeight
+          ) {
+            setActiveSection(section);
+            break;
+          }
+        }
       }
-    }
-  }, [])
+    };
 
-  // Navigation handler
-  const navigateToPage = (page) => {
-    if (page !== currentPage) {
-      const path = page === 'home' ? '/' : `/${page}`
-      window.history.pushState({}, '', path)
-      setCurrentPage(page)
-      window.scrollTo(0, 0)
-    }
-  }
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  // Scroll to section for homepage
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Toujours afficher la nav en haut de page
+      if (currentScrollY < 100) {
+        setNavHidden(false);
+        setLastScrollY(currentScrollY);
+        return;
+      }
+
+      // Cacher lors du défilement vers le bas
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setNavHidden(true);
+      }
+      // Afficher lors du défilement vers le haut
+      else if (currentScrollY < lastScrollY) {
+        setNavHidden(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   const scrollToSection = (sectionId) => {
-    const el = document.getElementById(sectionId)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  // Render contact card based on current slide
-  const renderContactCard = (type) => {
-    switch(type) {
-      case 'whatsapp':
-        return (
-          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm rounded-2xl p-6 order border-green-500/20 hover:border-green-400/40 transition-all duration-300 group w-full h-full">
-            <div className="flex flex-col items-center text-center h-full justify-between">
-              <div>
-                <div className="bg-green-500/20 backdrop-blur-sm rounded-full p-3 sm:p-4 w-12 h-12 sm:w-16 sm:h-16 mb-4 sm:mb-6 border border-green-400/30 group-hover:scale-110 transition-transform duration-300 flex items-center justify-center mx-auto">
-                  <Phone className="h-6 w-6 sm:h-8 w-8 text-green-400" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 group-hover:text-green-400 transition-colors duration-300">
-                  WhatsApp
-                </h3>
-                <p className="text-gray-300 text-sm sm:text-base mb-4 sm:mb-6">
-                  Contactez-nous directement via WhatsApp pour une réponse rapide
-                </p>
-              </div>
-              <Button
-                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-full transition-all duration-300 transform hover:scale-105"
-                onClick={() => window.open('https://wa.me/+33749677529', '_blank')}
-              >
-                Ouvrir WhatsApp
-              </Button>
-            </div>
-          </div>
-        )
-      case 'email':
-        return (
-          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 group w-full h-full">
-            <div className="flex flex-col items-center text-center h-full justify-between">
-              <div>
-                <div className="bg-blue-500/20 backdrop-blur-sm rounded-full p-3 sm:p-4 w-12 h-12 sm:w-16 sm:h-16 mb-4 sm:mb-6 border border-blue-400/30 group-hover:scale-110 transition-transform duration-300 flex items-center justify-center mx-auto">
-                  <Mail className="h-6 w-6 sm:h-8 w-8 text-blue-400" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 group-hover:text-blue-400 transition-colors duration-300">
-                  Email
-                </h3>
-                <p className="text-gray-300 text-sm sm:text-base mb-4 sm:mb-6">
-                  Envoyez-nous un email pour toute question ou demande d'information
-                </p>
-              </div>
-              <Button
-                className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-full transition-all duration-300 transform hover:scale-105"
-                onClick={() => window.open('mailto:Bsbtrading@icloud.com', '_blank')}
-              >
-                Envoyer un Email
-              </Button>
-            </div>
-          </div>
-        )
-      case 'instagram':
-        return (
-          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-500/20 hover:border-pink-400/40 transition-all duration-300 group w-full h-full">
-            <div className="flex flex-col items-center text-center h-full justify-between">
-              <div>
-                <div className="bg-pink-500/20 backdrop-blur-sm rounded-full p-3 sm:p-4 w-12 h-12 sm:w-16 sm:h-16 mb-4 sm:mb-6 border border-pink-400/30 group-hover:scale-110 transition-transform duration-300 flex items-center justify-center mx-auto">
-                  <Instagram className="h-6 w-6 sm:h-8 w-8 text-pink-400" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 group-hover:text-pink-400 transition-colors duration-300">
-                  Instagram
-                </h3>
-                <p className="text-gray-300 text-sm sm:text-base mb-4 sm:mb-6">
-                  Découvrez nos actualités visuelles et stories sur Instagram
-                </p>
-              </div>
-              <Button
-                className="bg-gradient-to-r from-pink-500 to-fuchsia-600 hover:from-pink-600 hover:to-fuchsia-700 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-full transition-all duration-300 transform hover:scale-105"
-                onClick={() => window.open('https://www.instagram.com/bsbridge7?igsh=MWQ2ZjUzN3VwMjRoNQ==', '_blank')}
-              >
-                Voir Instagram
-              </Button>
-            </div>
-          </div>
-        )
-      case 'telegram':
-        return (
-          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm rounded-2xl p-6 border border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300 group w-full h-full">
-            <div className="flex flex-col items-center text-center h-full justify-between">
-              <div>
-                <div className="bg-cyan-500/20 backdrop-blur-sm rounded-full p-3 sm:p-4 w-12 h-12 sm:w-16 sm:h-16 mb-4 sm:mb-6 border border-cyan-400/30 group-hover:scale-110 transition-transform duration-300 flex items-center justify-center mx-auto">
-                  <Send className="h-6 w-6 sm:h-8 w-8 text-cyan-400" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 group-hover:text-cyan-400 transition-colors duration-300">
-                  Telegram
-                </h3>
-                <p className="text-gray-300 text-sm sm:text-base mb-4 sm:mb-6">
-                  Rejoignez notre canal Telegram pour les dernières mises à jour
-                </p>
-              </div>
-              <Button
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-full transition-all duration-300 transform hover:scale-105"
-                onClick={() => window.open('https://t.me/bsbtradingbot', '_blank')}
-              >
-                Ouvrir Telegram
-              </Button>
-            </div>
-          </div>
-        )
-      case 'snapchat':
-        return (
-          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm rounded-2xl p-6 border border-yellow-500/20 hover:border-yellow-400/40 transition-all duration-300 group w-full h-full">
-            <div className="flex flex-col items-center text-center h-full justify-between">
-              <div>
-                <div className="bg-yellow-500/20 backdrop-blur-sm rounded-full p-3 sm:p-4 w-12 h-12 sm:w-16 sm:h-16 mb-4 sm:mb-6 border border-yellow-400/30 group-hover:scale-110 transition-transform duration-300 flex items-center justify-center mx-auto">
-                  <Camera className="h-6 w-6 sm:h-8 w-8 text-yellow-400" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 group-hover:text-yellow-400 transition-colors duration-300">
-                  Snapchat
-                </h3>
-                <p className="text-gray-300 text-sm sm:text-base mb-4 sm:mb-6">
-                  Suivez-nous sur Snapchat pour du contenu exclusif
-                </p>
-              </div>
-              <Button
-                className="bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base rounded-full transition-all duration-300 transform hover:scale-105"
-                onClick={() => window.open('https://t.snapchat.com/o7LAPKgZ', '_blank')}
-              >
-                Ouvrir Snapchat
-              </Button>
-            </div>
-          </div>
-        )
-      default:
-        return null
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
     }
-  }
+    setMobileMenuOpen(false);
+  };
 
-  // Render routed page if not on home
-  if (currentPage !== 'home' && pageComponents[currentPage]) {
-    return pageComponents[currentPage]
-  }
+  const stats = [
+    { label: "Utilisateurs actifs", value: "7000", suffix: "+" },
+    { label: "Taux de satisfaction", value: "98", suffix: "%" },
+    {
+      label: "Revenus générés",
+      value: "2500000",
+      suffix: "€+",
+      format: "currency",
+    },
+    { label: "Récompenses distribuées", value: "500", suffix: "+" },
+  ];
 
-  const services = [
-    {
-      id: 'trading',
-      title: 'BOT TRADING',
-      icon: Bot,
-      image: tradingBotImg, 
-      description: "Le trading, c'est simplement l'art d'acheter et de revendre des actifs financiers en profitant des fluctuations de leur valeur. Chez BSB, nous investissons sur différents marchés, comme par exemple les cryptomonnaies (telles que le Bitcoin), les matières premières (comme l'or), ou encore les actions des grandes entreprises américaines. L'idée, c'est de laisser notre robot de trading automatisé analyser le marché et prendre des décisions d'achat et de vente à votre place, afin de générer des revenus de façon autonome et simplifiée."
-    },
-    {
-      id: 'battlepass',
-      title: 'BATTLE PASS',
-      icon: Trophy,
-      image: battlePassNewImg,
-      description: "Fonctionnement Ludique : Le Battle Pass vous permet de compléter des missions pour obtenir des récompenses variées, qu'il s'agisse de cadeaux ou de bonus financiers.\nRécompenses Attractives : Chaque mission réussie apporte une valeur ajoutée, rendant l'expérience plus engageante et motivante.\nTransparence et Sécurité : Comme pour le trading automatisé, vous gardez le contrôle total de vos fonds et de vos gains."
-    },
-    {
-      id: 'couture',
-      title: 'HAUTE COUTURE',
-      icon: Shirt,
-      image: hauteCoutureImg,
-      description: "La haute couture chez BsBridge symbolise l'union entre l'investissement et l'univers du luxe. Chaque pièce de notre collection incarne cette passerelle entre le monde de la finance et celui de la mode, créant une marque de vêtements unique, où l'élégance et l'exclusivité rencontrent l'innovation et l'investissement. C'est ainsi que BsBridge fait le lien entre ces deux univers."
-    }
-  ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
-      {/* Hero Section */}
-      <header className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div
-          className="absolute inset-0 hero-bg"
-          style={{
-            '--mobile-bg': `url(${newHeroImg})`,
-            '--desktop-bg': `url(${newHeroDesktopImg})`,
-          }}
-        ></div>
+    <div className="min-h-screen bg-slate-900 text-white">
+      {currentPage === "home" && (
+        <>
+          {/* Navigation */}
+          <nav className={`fixed top-0 w-full z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 transition-transform duration-300 ${navHidden ? '-translate-y-full' : 'translate-y-0'
+            }`}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center h-16">
+                <div className="text-center cursor-pointer">
+                  <img
+                    src={BsbLogo}
+                    alt="BSB Logo"
+                    onClick={() => scrollToSection("hero")}
+                    className="w-16 h-auto mx-auto cursor-pointer hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
 
-        <div className="relative z-10 text-center text-white w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Interactive Service Buttons from the image - borderless */}
-          <div className="grid grid-cols-2 lg:grid-cols-2 gap-2 sm:gap-4 mb-8 mt-32 sm:mb-12 px-4">
-            <Button
-              className="bg-gradient-to-r from-cyan-500/30 to-blue-600/30 hover:from-cyan-500/50 hover:to-blue-600/50 text-cyan-300 hover:text-white px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm lg:text-lg rounded-lg transition-all duration-300 transform hover:scale-105 backdrop-blur-sm border-0"
-              onClick={() => scrollToSection('trading')}
-            >
-              <Bot className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 w-4 lg:h-5 w-5" />
-              <span className="hidden sm:inline">BOT TRADING</span>
-              <span className="sm:hidden">BOT</span>
-            </Button>
-            <Button
-              className="bg-gradient-to-r from-purple-500/30 to-pink-600/30 hover:from-purple-500/50 hover:to-pink-600/50 text-purple-300 hover:text-white px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm lg:text-lg rounded-lg transition-all duration-300 transform hover:scale-105 backdrop-blur-sm border-0"
-              onClick={() => scrollToSection('battlepass')}
-            >
-              <Trophy className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 w-4 lg:h-5 w-5" />
-              <span className="hidden sm:inline">BATTLE PASS</span>
-              <span className="sm:hidden">BATTLE</span>
-            </Button>
-            <Button
-              className="bg-gradient-to-r from-amber-500/30 to-orange-600/30 hover:from-amber-500/50 hover:to-orange-600/50 text-amber-300 hover:text-white px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm lg:text-lg rounded-lg transition-all duration-300 transform hover:scale-105 backdrop-blur-sm border-0 "
-              onClick={() => scrollToSection('couture')}
-            >
-              <Shirt className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 w-4 lg:h-5 w-5" />
-              <span className="hidden sm:inline">HAUTE COUTURE</span>
-              <span className="sm:hidden">COUTURE</span>
-            </Button>
-            <Button
-              className="bg-gradient-to-r from-green-500/30 to-emerald-600/30 hover:from-green-500/50 hover:to-emerald-600/50 text-green-300 hover:text-white px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm lg:text-lg rounded-lg transition-all duration-300 transform hover:scale-105 backdrop-blur-sm border-0"
-              onClick={() => scrollToSection('contact')}
-            >
-              <Mail className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 w-4 lg:h-5 w-5" />
-              <span className="hidden sm:inline">CONTACT</span>
-              <span className="sm:hidden">CONTACT</span>
-            </Button>
-          </div>
+                {/* Desktop Navigation */}
+                <div className="hidden md:block">
+                  <div className="ml-10 flex items-baseline space-x-4">
+                    {[
+                      { id: "trois-palier", label: "Services" },
+                      { id: "how-it-works", label: "Comment ça marche" },
+                      { id: "faq", label: "FAQ" },
+                      { id: "testimonials", label: "Témoignages" },
+                      { id: "contact", label: "Contact" },
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => scrollToSection(item.id)}
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item.id
+                          ? "bg-cyan-500/20 text-cyan-300"
+                          : "text-gray-300 hover:text-white hover:bg-slate-700"
+                          }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-          <Button
-            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/25 border-0"
-            onClick={() => scrollToSection('services')}
-          >
-            Explorez nos services
-            <ChevronDown className="ml-2 h-4 w-4 sm:h-5 w-5 animate-bounce" />
-          </Button>
-        </div>
+                <div className="hidden md:flex items-center space-x-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10 hover:text-white"
+                  // onClick={() => setCurrentPage("login")}
+                  >
+                    Connexion
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
+                  // onClick={() => setCurrentPage("register")}
+                  >
+                    Commencer
+                  </Button>
+                </div>
 
-        {/* Floating particles effect */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 sm:w-2 sm:h-2 bg-cyan-400/30 rounded-full animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${3 + Math.random() * 4}s`
-              }}
-            ></div>
-          ))}
-        </div>
-      </header>
+                {/* Mobile menu button */}
+                <div className="md:hidden">
+                  <button
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    className="text-gray-300 hover:text-white"
+                  >
+                    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                  </button>
+                </div>
+              </div>
 
-      {/* Introduction Section */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-br from-slate-900/90 via-blue-900/70 to-purple-900/50">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 sm:mb-8">
-            Bienvenue dans l'<span className="text-cyan-400">univers BSB</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
-            Découvrez l'écosystème BsBridge où l'innovation financière rencontre le luxe et le gaming.
-            Une plateforme révolutionnaire qui unit trois piliers fondamentaux pour transformer votre
-            expérience d'investissement et de lifestyle.
-          </p>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section id="services" className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-br from-slate-900/80 via-blue-900/60 to-purple-900/40">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-            {services.map((service, index) => {
-              const Icon = service.icon
-              return (
-                <div
-                  key={service.id}
-                  id={service.id}
-                  className={`group relative bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-sm rounded-2xl overflow-hidden border transition-all duration-500 transform hover:scale-105 hover:shadow-2xl ${service.id === 'trading' ? 'border-cyan-500/30 hover:border-cyan-400/60 hover:shadow-cyan-500/20' :
-                    service.id === 'battlepass' ? 'border-purple-500/30 hover:border-purple-400/60 hover:shadow-purple-500/20' :
-                    'border-amber-500/30 hover:border-amber-400/60 hover:shadow-amber-500/20'
-                  } ${activeSection === service.id ? 'ring-2 ring-cyan-400' : ''}`}
-                  onMouseEnter={() => setActiveSection(service.id)}
-                  onMouseLeave={() => setActiveSection(null)}
-                  onClick={() => navigateToPage(service.id)}
-                >
-                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${service.id === 'trading' ? 'bg-gradient-to-br from-cyan-500/10 to-blue-500/10' :
-                    service.id === 'battlepass' ? 'bg-gradient-to-br from-purple-500/10 to-pink-500/10' :
-                    'bg-gradient-to-br from-amber-500/10 to-orange-500/10'
-                  }`}></div>
-
-                  <div className="relative h-48 sm:h-64 overflow-hidden">
-                    <img
-                      src={service.image}
-                      alt={service.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
-                    <div className="absolute top-4 left-4">
-                      <div className={`backdrop-blur-sm rounded-full p-2 sm:p-3 border ${service.id === 'trading' ? 'bg-cyan-500/20 border-cyan-400/30' :
-                        service.id === 'battlepass' ? 'bg-purple-500/20 border-purple-400/30' :
-                        'bg-amber-500/20 border-amber-400/30'
-                      }`}>
-                        <Icon className={`h-4 w-4 sm:h-6 w-6 ${service.id === 'trading' ? 'text-cyan-400' :
-                          service.id === 'battlepass' ? 'text-purple-400' :
-                          'text-amber-400'
-                        }`} />
-                      </div>
+              {/* Mobile Navigation */}
+              {mobileMenuOpen && (
+                <div className="md:hidden">
+                  <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-slate-800/95 backdrop-blur-md rounded-lg mt-2">
+                    {[
+                      { id: "trois-palier", label: "Services" },
+                      { id: "how-it-works", label: "Comment ça marche" },
+                      { id: "faq", label: "FAQ" },
+                      { id: "testimonials", label: "Témoignages" },
+                      { id: "contact", label: "Contact" },
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => scrollToSection(item.id)}
+                        className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-slate-700"
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                    <div className="flex flex-col space-y-2 pt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10"
+                      // onClick={() => setCurrentPage("login")}
+                      >
+                        Connexion
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700"
+                      // onClick={() => setCurrentPage("register")}
+                      >
+                        Commencer
+                      </Button>
                     </div>
                   </div>
-
-                  <div className="p-4 sm:p-6">
-                    <h3 className={`text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 transition-colors duration-300 ${service.id === 'trading' ? 'group-hover:text-cyan-400' :
-                      service.id === 'battlepass' ? 'group-hover:text-purple-400' :
-                      'group-hover:text-amber-400'
-                    }`}>
-                      {service.title}
-                    </h3>
-                    <p className="text-gray-300 text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6 line-clamp-4">
-                      {service.description}
-                    </p>
-                    {service.id === 'couture' && (
-                      <div className="bg-amber-500/20 border border-amber-400/30 rounded-lg p-3 mb-4 sm:mb-6">
-                        <p className="text-amber-300 text-xs sm:text-sm font-medium">
-                          🗓️ Disponible à partir du 1er janvier 2026
-                        </p>
-                      </div>
-                    )}
-                    <Button
-                      variant="ghost"
-                      className={`transition-all duration-300 group-hover:translate-x-2 text-xs sm:text-sm ${service.id === 'trading' ? 'text-cyan-400 hover:text-white hover:bg-cyan-500/20' :
-                        service.id === 'battlepass' ? 'text-purple-400 hover:text-white hover:bg-purple-500/20' :
-                        'text-amber-400 hover:text-white hover:bg-amber-500/20'
-                      }`}
-                    >
-                      En savoir plus
-                      <ArrowRight className="ml-2 h-3 w-3 sm:h-4 w-4" />
-                    </Button>
-                  </div>
                 </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
+              )}
+            </div>
+          </nav>
 
-      {/* Contact Section */}
-      <section id="contact" className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-to-r from-slate-900/60 to-blue-900/40">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="mb-8 sm:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 sm:mb-6">
-              CONTACT
-            </h2>
-          </div>
-
-          {/* Mobile Carousel */}
-          <div className="md:hidden relative overflow-hidden rounded-2xl mb-8">
-            <div 
-              className="flex transition-transform duration-500 ease-in-out h-full"
-              style={{ transform: `translateX(-${currentContactSlide * 100}%)` }}
+          {/* Hero Section */}
+          <section
+            id="hero"
+            className="relative min-h-screen flex items-center justify-center overflow-hidden"
+          >
+            <div
+              ref={backgroundRef}
+              className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900"
             >
-              {contactSlides.map((slide, index) => (
-                <div key={index} className="w-full flex-shrink-0 px-2 h-full">
-                  {renderContactCard(slide)}
-                </div>
-              ))}
+              <ResponsiveImage
+                desktopSrc={heroDesktop}
+                mobileSrc={newHero}
+                src={heroDesktop}
+                alt="Hero Background"
+                className="w-full h-full object-cover"
+              />
             </div>
-            
-            {/* Indicators */}
-            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-2">
-              {contactSlides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setCurrentContactSlide(index)
-                    if (carouselInterval.current) {
-                      clearInterval(carouselInterval.current)
-                      carouselInterval.current = setInterval(() => {
-                        setCurrentContactSlide(prev => (prev + 1) % contactSlides.length)
-                      }, 2000)
-                    }
-                  }}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${currentContactSlide === index ? 'bg-white w-4' : 'bg-gray-500'}`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          </div>
 
-          {/* Desktop Grid */}
-          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
-            {contactSlides.map(slide => (
-              <div key={slide} className="w-full h-full">
-                {renderContactCard(slide)}
+            <div
+              ref={heroRef}
+              className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+            >
+              <div className="mb-6">
+                <span className="inline-block px-4 py-2 bg-cyan-500/20 text-cyan-300 rounded-full text-sm font-medium border border-cyan-500/30">
+                  #1 Plateforme d'investissement innovante
+                </span>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="py-8 sm:py-12 px-4 sm:px-6 border-t border-cyan-500/20 bg-gradient-to-r from-slate-900/80 to-blue-900/60">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="mb-6 sm:mb-8">
-            <h3 className="text-2xl sm:text-3xl font-bold text-cyan-400 mb-2">BSB</h3>
-            <p className="text-gray-400 text-sm sm:text-base">L'innovation au service de votre réussite</p>
-          </div>
-          <div className="text-gray-500 text-xs sm:text-sm">
-            © 2025 BsBridge. Tous droits réservés.
-          </div>
-        </div>
-      </footer>
+              <h1
+                ref={titleRef}
+                className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+              >
+                Investissez. Progressez.{" "}
+                <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                  Gagnez.
+                </span>
+              </h1>
+
+              <p
+                ref={subtitleRef}
+                className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto"
+              >
+                La seule solution qui unit trading automatisé, système de
+                récompenses gamifié et haute couture de luxe.
+              </p>
+
+              <div
+                ref={ctaRef}
+                className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+              >
+                <Button
+                  ref={magneticButtonRef}
+                  size="lg"
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 text-lg rounded-full"
+                // onClick={() => setCurrentPage("register")}
+                >
+                  Commencer maintenant
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10 px-8 py-4 text-lg rounded-full hover:text-white"
+                  onClick={() => scrollToSection("trois-palier")}
+                >
+                  Découvrir nos services
+                </Button>
+              </div>
+
+              <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-400">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-400" />
+                  Configuration en 5 minutes
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-blue-400" />
+                  Aucun code requis
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-cyan-400" />
+                  Support 24/7 exceptionnel
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Stats Section */}
+          <section id="stats" className="py-20 bg-slate-800/50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Rejoignez des milliers d'utilisateurs satisfaits
+                </h2>
+              </div>
+
+              <div
+                ref={statsRef}
+                className="grid grid-cols-2 md:grid-cols-4 gap-8"
+              >
+                {stats.map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className="text-3xl md:text-4xl font-bold text-cyan-400 mb-2">
+                      <span className="stat-number" data-value={stat.value}>
+                        0
+                      </span>
+                      <span>{stat.suffix}</span>
+                    </div>
+                    <div className="text-gray-300">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* WeTracked Style Trois Palier Section */}
+          <WeTrackedStyleTroisPalier setActiveTab={setActiveTab} activeTab={activeTab}/>
+
+          {/* How It Works Section */}
+          <HowItWorksSection />
+
+          {/* FAQ Section */}
+          <FAQSection scroll={scrollToSection} />
+
+          {/* Testimonials */}
+          <Testimonials />
+
+          {/* Contact Section */}
+          <section id="contact" className="py-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Contactez-nous
+                </h2>
+                <p className="text-xl text-gray-300">
+                  Notre équipe est là pour répondre à toutes vos questions
+                </p>
+              </div>
+              <ContactCarousel />
+            </div>
+          </section>
+
+          {/* Final CTA */}
+          <section className="py-20 bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Prêt à transformer votre avenir financier ?
+              </h2>
+              <p className="text-xl text-gray-300 mb-8">
+                Rejoignez des milliers d'utilisateurs qui ont déjà commencé leur
+                voyage avec BSB Bridge
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 text-lg rounded-full"
+                // onClick={() => setCurrentPage("register")}
+                >
+                  Commencer maintenant
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10 px-8 py-4 text-lg rounded-full hover:text-white"
+                // onClick={() => setCurrentPage("login")}
+                >
+                  Se connecter
+                </Button>
+              </div>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="bg-slate-900 border-t border-slate-800 py-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid md:grid-cols-4 gap-8">
+                <div>
+                  <h3 className="text-xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                    BSB Bridge
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    La plateforme qui révolutionne l'investissement automatisé,
+                    les récompenses gamifiées, et l'excellence couture.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-4">Services</h4>
+                  <ul className="space-y-2 text-gray-400">
+                    <li>
+                      <button
+                        onClick={() => { scrollToSection("trois-palier"), setActiveTab("bot-trading") }}
+                        className="hover:text-white transition-colors"
+                      >
+                        Bot Trading
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => { scrollToSection("trois-palier"), setActiveTab("battle-pass") }}
+                        className="hover:text-white transition-colors"
+                      >
+                        Battle Pass
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => { scrollToSection("trois-palier"), setActiveTab("haute-couture") }}
+                        className="hover:text-white transition-colors"
+                      >
+                        Haute Couture
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-4">Support</h4>
+                  <ul className="space-y-2 text-gray-400">
+                    <li>
+                      <button
+                        onClick={() => scrollToSection("faq")}
+                        className="hover:text-white transition-colors"
+                      >
+                        FAQ
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => scrollToSection("contact")}
+                        className="hover:text-white transition-colors"
+                      >
+                        Contact
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => scrollToSection("how-it-works")}
+                        className="hover:text-white transition-colors"
+                      >
+                        Comment ça marche
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-4">Contact</h4>
+                  <ul className="space-y-2 text-gray-400">
+                    <li>
+                      <a
+                        href="mailto:Bsbtrading@icloud.com"
+                        className="hover:text-white transition-colors"
+                      >
+                        Bsbtrading@icloud.com
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="https://wa.me/+33749677529"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-white transition-colors"
+                      >
+                        +33 7 49 67 75 29
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2025 BSB Bridge. Tous droits réservés.</p>
+              </div>
+            </div>
+          </footer>
+        </>
+      )}
     </div>
-  )
+  );
 }
 
-export default App
-
+export default App;
