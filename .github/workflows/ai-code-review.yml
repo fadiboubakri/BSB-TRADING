@@ -23,10 +23,15 @@ jobs:
         python-version: '3.x'
 
     - name: Install dependencies
-      run: pip install -r .github/workflows/requirements.txt
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r .github/workflows/requirements.txt
 
     - name: Run AI Code Review
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      run: python .github/workflows/ai_review.py
+      run: |
+        source venv/bin/activate
+        python .github/workflows/ai_review.py
