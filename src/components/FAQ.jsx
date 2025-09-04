@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { useFAQAnimation } from '../hooks/GSAPAnimations';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
+import { useEffect } from 'react';
 
 const FAQSection = ({scroll}) => {
   // State for accordion functionality (desktop)
@@ -14,7 +15,10 @@ const FAQSection = ({scroll}) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     Autoplay({ delay: 5000, stopOnInteraction: false })
   ]);
-  
+  useEffect(() => {
+    emblaRef
+  }, [])
+
   // FAQ data
   const faqData = [
     {
